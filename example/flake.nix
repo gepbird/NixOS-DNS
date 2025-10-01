@@ -5,6 +5,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-dns.url = "github:Janik-Haag/nixos-dns";
     nixos-dns.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs-patcher.url = "github:gepbird/nixpkgs-patcher";
+    nixpkgs-patch-random-pr = {
+      url = "https://github.com/NixOS/nixpkgs/pull/447795.diff";
+      flake = false;
+    };
   };
 
   outputs =
@@ -12,6 +17,8 @@
       self,
       nixpkgs,
       nixos-dns,
+      nixpkgs-patcher,
+      nixpkgs-patch-random-pr,
     }:
     let
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -25,15 +32,17 @@
     in
     {
       nixosConfigurations = {
-        host1 = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+        host1 = nixpkgs-patcher.lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = inputs;
           modules = [
             nixos-dns.nixosModules.dns
             ./hosts/host1.nix
           ];
         };
-        host2 = nixpkgs.lib.nixosSystem {
+        host2 = nixpkgs-patcher.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = inputs;
           modules = [
             nixos-dns.nixosModules.dns
             ./hosts/host2.nix

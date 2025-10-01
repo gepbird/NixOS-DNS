@@ -26,7 +26,24 @@
         "aarch64-linux"
       ];
       dnsConfig = {
-        inherit (self) nixosConfigurations;
+        nixosConfigurations = {
+          host1 = nixpkgs.lib.nixosSystem {
+            system = "aarch64-linux";
+            specialArgs = inputs;
+            modules = [
+              nixos-dns.nixosModules.dns
+              ./hosts/host1.nix
+            ];
+          };
+          host2 = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = inputs;
+            modules = [
+              nixos-dns.nixosModules.dns
+              ./hosts/host2.nix
+            ];
+          };
+        };
         extraConfig = import ./dns.nix;
       };
     in

@@ -25,14 +25,10 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      dnsConfig = {
-        inherit (self) nixosConfigurations;
-        extraConfig = import ./dns.nix;
-      };
-    in
-    {
-      nixosConfigurations = {
-        host1 = nixpkgs-patcher.lib.nixosSystem {
+      makeNixosConfigurations =
+        nixpkgs-base: hosts: nixpkgs.lib.mapAttrs (name: value: nixpkgs-base.lib.nixosSystem value) hosts;
+      hosts = {
+        host1 = {
           system = "aarch64-linux";
           specialArgs = inputs;
           modules = [
@@ -40,7 +36,7 @@
             ./hosts/host1.nix
           ];
         };
-        host2 = nixpkgs-patcher.lib.nixosSystem {
+        host2 = {
           system = "x86_64-linux";
           specialArgs = inputs;
           modules = [
@@ -49,6 +45,13 @@
           ];
         };
       };
+      dnsConfig = {
+        nixosConfigurations = makeNixosConfigurations nixpkgs hosts;
+        extraConfig = import ./dns.nix;
+      };
+    in
+    {
+      nixosConfigurations = makeNixosConfigurations nixpkgs-patcher hosts;
 
       # nix eval .#dnsDebugHost
       dnsDebugHost = nixos-dns.utils.debug.host self.nixosConfigurations.host1;

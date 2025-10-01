@@ -69,15 +69,16 @@
     },
     "nixpkgs-patcher": {
       "locked": {
-        "lastModified": 1756482624,
-        "narHash": "sha256-WO5Nyv97u3fHgNsJWS+3hqC82dOhkndXl1VasKgI5V0=",
+        "lastModified": 1759349935,
+        "narHash": "sha256-sB4EXoGt6fyeltdiifJ6+gNMa+ISmmEIySnB5uu5UXs=",
         "owner": "gepbird",
         "repo": "nixpkgs-patcher",
-        "rev": "ed4658540671be09f422232edd1ea9486da4ba3b",
+        "rev": "2efeedd4b742a2b50a9386077701e032ed49af03",
         "type": "github"
       },
       "original": {
         "owner": "gepbird",
+        "ref": "configurable-system",
         "repo": "nixpkgs-patcher",
         "type": "github"
       }

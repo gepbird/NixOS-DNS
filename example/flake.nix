@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-dns.url = "github:Janik-Haag/nixos-dns";
     nixos-dns.inputs.nixpkgs.follows = "nixpkgs";
-    nixpkgs-patcher.url = "github:gepbird/nixpkgs-patcher";
+    nixpkgs-patcher.url = "github:gepbird/nixpkgs-patcher/configurable-system";
     nixpkgs-patch-random-pr = {
       url = "https://github.com/NixOS/nixpkgs/pull/447795.diff";
       flake = false;
@@ -34,6 +34,8 @@
       nixosConfigurations = {
         host1 = nixpkgs-patcher.lib.nixosSystem {
           system = "aarch64-linux";
+          # this requires you to pass impure, eg: `nix build .#octodns --impure`
+          nixpkgsPatcher.system = builtins.currentSystem;
           specialArgs = inputs;
           modules = [
             nixos-dns.nixosModules.dns
@@ -42,6 +44,8 @@
         };
         host2 = nixpkgs-patcher.lib.nixosSystem {
           system = "x86_64-linux";
+          # this requires you to pass impure, eg: `nix build .#octodns --impure`
+          nixpkgsPatcher.system = builtins.currentSystem;
           specialArgs = inputs;
           modules = [
             nixos-dns.nixosModules.dns
